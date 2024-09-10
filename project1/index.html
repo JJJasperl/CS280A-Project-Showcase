@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS 180: Intro to Computer Vision and Computational Photography, Fall 2024</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+        h1 {
+            font-size: 2em;
+            text-align: center;
+        }
+        h2 {
+            font-size: 1.7em;
+            color: #333;
+        }
+        h3 {
+            font-size: 1.2em;
+            color: #666;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            text-align: justify;
+            padding: 20px;
+        }
+        .header-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .images-container {
+            display: flex;
+            justify-content: space-around; 
+            margin-top: 20px;
+        }
+        .img-container {
+            width: 55%;
+            text-align: center;
+        }
+        img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+        }
+        .caption {
+            font-size: 1.1em;
+        }
+        p{
+            font-size: 1.1em;
+            margin-top: 0.5em;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-info">
+        <h1>CS 180: Intro to Computer Vision and Computational Photography, Fall 2024</h1>
+        <h1>Project 1: Colorizing the Prokudin-Gorskii photo collection</h1>
+        <h2>Jasper Liu, Fall 2024</h2>
+    </div>
+    
+    <div class="container">
+        <article>
+            <h2>Background</h2>
+            <p>Sergei Mikhailovich Prokudin-Gorskii (1863-1944) was a man well ahead of his time. 
+                Convinced, as early as 1907, that color photography was the wave of the future, he won Tzar's special permission to travel across the vast Russian Empire and take color photographs of everything he saw including the only color portrait of Leo Tolstoy. 
+                And he really photographed everything: people, buildings, landscapes, railroads, bridges... thousands of color pictures! 
+                His idea was simple: record three exposures of every scene onto a glass plate using a red, a green, and a blue filter. Luckily, his RGB glass plate negatives, capturing the last years of the Russian Empire, survived and were purchased in 1948 by the Library of Congress. 
+                The LoC has recently digitized the negatives and made them available on-line.</p>
+            <h2>Goal</h2>
+            <p>The goal of this assignment is to take the digitized Prokudin-Gorskii glass plate images and, using image processing techniques, automatically produce a color image with as few visual artifacts as possible.</p>
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./input.jpg" alt="Original Color Photography">
+                    <p class="caption">Original Color Photography</p>
+                </div>
+                <div class="img-container">
+                    <img src="./output/emir.jpg" alt="Aligned emir">
+                    <p class="caption">Output</p>
+                </div>
+            </div>
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./data/cathedral.jpg" alt="Original Color Photography">
+                    <p class="caption">Original Color Photography</p>
+                </div>
+                <div class="img-container">
+                    <img src="./output/cathedral.jpg" alt="Aligned Cathedral">
+                    <p class="caption">Output</p>
+                </div>
+            </div>
+        </article>
+        
+<article>
+    <h2>Approach</h2>
+    <h3>Non-Pyramid Alignment Method</h3>
+    <p>In the initial phase of the project, I employed a straightforward alignment technique. This method involved the following key steps:</p>
+    <ul>
+        <li><p>Metric Method: I tested two different metrics for alignment, the L2 norm and Normalized Cross-Correlation (NCC). After comparison, NCC is better on average for our data.</p>
+        <li><p>Cropping: To focus on the central portion of the images and reduce the influence of dark margins, I implemented a cropping method that removes 10% from each edge.</p>
+        <li><p>Exhaustive Search: I aligned the green and red channels to the blue channel by exhaustively searching over a window of displacements from -15 to +15 pixels. The best alignment would be found by the highest NCC score, which reflects the optimal overlap of color channels.</p>
+    </ul>
+    <p>This method works on images with small size, and it will take too long when implemneted on large-size images. </p>
+    
+    <article>
+        <h3>Pyramid Alignment Method</h3>
+        <p>For handling larger and more complex images, I used the pyramid-based alignment method to enhance both the speed and accuracy:</p>
+        <ul>
+            <li><p>Image Pyramid Construction: Starting with the original image, I construct a series of smaller images (pyramids), each reduced in size by a factor of 2 from the previous one. </li>
+            <li><p>Multi-Level Alignment: Alignment starts at the coarsest level of the pyramid and progresses to finer levels. At each level, we perform a localized search around the best displacement found at the previous level, adjusting our search range to ±10 pixels to fine-tune the alignment.</li>
+            <li><p>Concurrency Optimization: Utilizing Python's <code>ThreadPoolExecutor</code>, I can concurrently compute the displacements for the green and red channels relative to the blue channel. This parallel processing significantly cuts down on computation time.</li>
+        </ul>
+        <p>This pyramid approach effectively handles most of the larger .tif images. It didn't work well on the Empir image, the red channel alignment was consistently incorrect.
+            To address the issue, I changed the alignment method to the Structural Similarity Index (SSIM). Although running this method takes much more time, it successfully aligns the Empir image.</p> 
+        </p>
+        <div class="images-container">
+            <div class="img-container">
+                <img src="./output/emir1.jpg" alt="Aligned emir with NCC">
+                <p class="caption">NCC</p>
+            </div>
+            <div class="img-container">
+                <img src="./output/emir.jpg" alt="Aligned emir with SSIM">
+                <p class="caption">SSIM</p>
+            </div>
+        </div>
+    </article>
+
+    <article>
+        <h2>Results</h2>
+        <h3>Results without Pyramid Method on small JPG Images</h3>
+        <div class="images-container">
+            <div class="img-container">
+                <img src="./output/cathedral.jpg" alt="Aligned cathedral">
+                <p class="caption">G: (5, 2), R: (12, 3)</p>
+            </div>
+            <div class="img-container">
+                <img src="./output/monastery.jpg" alt="Aligned monastery">
+                <p class="caption">G: (-3, 2), R: (3, 2)</p>
+            </div>
+            <div class="img-container">
+                <img src="./output/tobolsk.jpg" alt="Aligned tobolsk">
+                <p class="caption">G: (3, 3), R: (6, 3)</p>
+            </div>
+        </div>
+
+        <h3>Results with Pyramid Method on Large TIFF Images</h3>
+        <div class="images-container">
+            <div class="img-container">
+                <img src="./output/emir.jpg" alt="Aligned emir">
+                <p class="caption">G: (50, 23), R: (105, 40)</p>
+            </div>
+            <div class="img-container">
+                <img src="./output/lady.jpg" alt="Aligned lady">
+                <p class="caption">G: (59, 16), R: (124, 13)</p>
+            </div>
+        </div>
+        <div class="images-container">
+            <div class="img-container">
+                <img src="./output/harvesters.jpg" alt="Aligned harvesters">
+                <p class="caption">G: (41, 17), R: (89, 23)</p>
+            </div>
+            <div class="img-container">
+                <img src="./output/icon.jpg" alt="Aligned icon">
+                <p class="caption">G: (81, 10), R: (178, 13)</p>
+            </div>
+        </div>
+        <div class="images-container">
+            <div class="img-container">
+                <img src="./output/onion_church.jpg" alt="Aligned onion_church">
+                <p class="caption">G: (51, 26), R: (108, 36)</p>
+            </div>
+            <div class="img-container">
+                <img src="./output/sculpture.jpg" alt="Aligned sculpture">
+                <p class="caption">G: (33, -11), R: (140, -27)</p>
+            </div>
+        </div>
+        <div class="images-container">
+            <div class="img-container">
+                <img src="./output/self_portrait.jpg" alt="Aligned self_portrait">
+                <p class="caption">G: (78, 29), R: (176, 37)</p>
+            </div>
+            <div class="img-container">
+                <img src="./output/three_generations.jpg" alt="Aligned three_generations">
+                <p class="caption">G: (53, -14), R: (112, 11)</p>
+            </div>
+        </div>
+        <div class="images-container">
+            <div class="img-container">
+                <img src="./output/train.jpg" alt="Aligned train">
+                <p class="caption">G: (42, 5), R: (87, 32)</p>
+            </div>
+        </div>
+        <h3>Extra Results</h3>
+        <div class="images-container">
+            <div class="img-container">
+                <img src="./output/trees_beside_water.jpg" alt="Aligned trees_beside_water">
+                <p class="caption">G: (10, 0), R: (88, 0)</p>
+            </div>
+            <div class="img-container">
+                <img src="./output/peonies.jpg" alt="Aligned peonies">
+                <p class="caption">G: (51, 3), R: (104, -6)</p>
+            </div>
+            <div class="img-container">
+                <img src="./output/island_of_Capri.jpg" alt="Aligned island_of_Capri">
+                <p class="caption">G: (32, -16), R: (78, -25)</p>
+            </div>
+        </div>
+    </article>
+</article>
+        
+    
+</body>
+</html>
