@@ -211,6 +211,45 @@
             </div>
         </div>
     </article>
+
+    <article>
+        <h2>Bells & Whistles (Extra Credit)</h2>
+        <h3>Auto Contrast</h3>
+        <p>Initially, the image is loaded and converted from its standard BGR color format to YUV, which separates brightness from color components.
+            This allows me to modify the image's luminance without affecting its colors. 
+            The brightness levels are distributed evenly using histogram equalization, improving the image's contrast. 
+            Finally, the image is converted back to BGR format to get correct colot.</p>
+        <div class="images-container">
+            <div class="img-container">
+                <img src="./output/emir.jpg" alt="Original Emir">
+                <p class="caption">Original</p>
+            </div>
+            <div class="img-container">
+                <img src="./output/emir_contrast.jpg" alt="Contrasted Emir">
+                <p class="caption">Contrasted</p>
+            </div>
+        </div>
+        <div class="images-container">
+            <div class="img-container">
+                <img src="./output/cathedral.jpg" alt="Original cathedral">
+                <p class="caption">Original</p>
+            </div>
+            <div class="img-container">
+                <img src="./output/cathedral_contrast.jpg" alt="Contrasted cathedral">
+                <p class="caption">Contrasted</p>
+            </div>
+        </div>
+        <div class="images-container">
+            <div class="img-container">
+                <img src="./output/peonies.jpg" alt="Original peonies">
+                <p class="caption">Original</p>
+            </div>
+            <div class="img-container">
+                <img src="./output/peonies_contrast.jpg" alt="Contrasted peonies">
+                <p class="caption">Contrasted</p>
+            </div>
+        </div>
+    </article>
 </article>
         
     
