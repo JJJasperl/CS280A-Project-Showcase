@@ -75,6 +75,21 @@
             margin-top: 0.5em;
             line-height: 1.6;
         }
+
+        .video-container {
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 <body>
@@ -87,7 +102,7 @@
     <div class="container">
         <article>
             <h2>Overview</h2>
-            <p>In this project, I morphed my face into someone else's, find found the average face of a female and male, and make caricatures.</p>
+            <p>In this project, I morphed my face into someone else's, found the average face of a female and male, and made caricatures.</p>
 
             <h2>Part 1: Defining Correspondences</h2>
             <p>In this part, I marked key points on both my face and George's face using ginput in Python to save them. I selected a total of 60 points, plus 4 corners. 
@@ -217,12 +232,12 @@
                     <p class="caption">Average to Jasper</p>
                 </div>
             </div>
-            <p>The image is a little werid, probably because I still keep some forehead, and my head is not in the same position as the average picture.</p>
+            <p>The image is a little weird, probably because I still kept some forehead, and my head is not in the same position as the average picture.</p>
 
             <h2>Part 5. Caricatures: Extrapolating from the mean</h2>
             <p>
                 In this part, I created caricatures by extrapolating from the average face. 
-                I created the image by not choosing alphas from the normal range [0, 1], I chose alphas from -0.5 and 2.
+                I created the image by choosing alphas outside the normal range [0, 1], specifically from -0.5 to 2.
             </p>
             <div class="images-container">
                 <div class="img-container">
@@ -236,7 +251,7 @@
             </div>
         
             <h2>Bells and Whistles</h2>
-            <p>I morphed my face to average female and to average smiling female</p>
+            <p>I morphed my face to the average female and to the average smiling female.</p>
             <div class="images-container">
                 <div class="img-container">
                     <img src="./output/me_to_female.png" alt="me_to_female">
@@ -248,10 +263,19 @@
                 </div>
             </div>
 
+            <h3>Jasper and part of his friends</h3>
+            <p>I used the previous methods and added morphs among friends to create a face-morphing music video.</p>
+            <div class="video-container">
+                <iframe 
+                    src="https://youtube.com/shorts/2VoGF7aiO3M" 
+                    frameborder="0" 
+                    allowfullscreen>
+                </iframe>
+            </div>
             <h2>Reflection</h2>
             <p>
                 The project is very interesting. I learned how to morph two faces together. 
-                After marking the keypoitns, I could use these keypoints to create a mid-way image and generate a smooth morphing sequence.
+                After marking the keypoints, I could use these keypoints to create a mid-way image and generate a smooth morphing sequence.
                 What I can do better: I can choose more keypoints on the hair to make the morphing more smooth.
             </p>
         </article>
