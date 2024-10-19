@@ -113,7 +113,7 @@
                 <li>Blend images into a mosaic</li>
                 <li>Bells and Whistles</li>
             </ol>
-            <h2>Part 1: Shoot and digitize pictures</h2>
+            <h2>Shoot and digitize pictures</h2>
             <p>The following are the images I used in this project:</p>
 
             <div class="images-container">
@@ -129,167 +129,234 @@
                     <img src="./img/observatory1.jpg">
                     <p class="caption">Griffith Observatory in LA</p>
                 </div>
+                <div class="img-container">
+                    <img src="./img/mountain2.jpg">
+                    <p class="caption">White Mountain, NH</p>
+                </div>
             </div>
-
+            <h2>Image Rectification</h2>
+            <h3>Understanding the Homography Matrix</h3>
+            <p>
+                The homography matrix is used to relate two planes in projective space. We express this as:
+            </p>
+            <p>
+                \[
+                \mathbf{q} = H \mathbf{p}
+                \]
+            </p>
+            <p>
+                Here, both \(\mathbf{q}\) and \(\mathbf{p}\) are in homogeneous coordinates:
+            </p>
+            <p>
+                \[
+                \begin{pmatrix}
+                wq_1 \\
+                wq_2 \\
+                w
+                \end{pmatrix}
+                =
+                \begin{pmatrix}
+                a & b & c \\
+                d & e & f \\
+                g & h & 1
+                \end{pmatrix}
+                \begin{pmatrix}
+                p_1 \\
+                p_2 \\
+                1
+                \end{pmatrix}
+                \]
+            </p>
+            <p>
+                This implies that \(w = gp_1 + hp_2 + 1\). We substitute to get the relations:
+            </p>
+            <p>
+                \[
+                (gp_1 + hp_2 + 1)q_1 = ap_1 + bp_2 + c
+                \]
+            </p>
+            <p>
+                \[
+                (gp_1 + hp_2 + 1)q_2 = dp_1 + ep_2 + f
+                \]
+            </p>
+            <p>
+                Or equivalently:
+            </p>
+            <p>
+                \[
+                g(p_1 q_1) + h(p_2 q_1) + q_1 = ap_1 + bp_2 + c
+                \]
+            </p>
+            <p>
+                \[
+                g(p_1 q_2) + h(p_2 q_2) + q_2 = dp_1 + ep_2 + f
+                \]
+            </p>
+            <p>
+                These equations are linear in \(p_i\), \(q_i\), and \(p_i q_j\). Stacking them into matrix form, we have:
+            </p>
+            <p>
+                \[
+                \begin{pmatrix}
+                p_1 & p_2 & 1 & 0 & 0 & 0 & -p_1 q_1 & -p_2 q_1 \\
+                0 & 0 & 0 & p_1 & p_2 & 1 & -p_1 q_2 & -p_2 q_2
+                \end{pmatrix}
+                \begin{pmatrix}
+                a \\
+                b \\
+                c \\
+                d \\
+                e \\
+                f \\
+                g \\
+                h
+                \end{pmatrix}
+                =
+                \begin{pmatrix}
+                q_1 \\
+                q_2
+                \end{pmatrix}
+                \]
+            </p>
+            <p>
+                For a non-underdetermined system, we need at least 4 correspondences between the images.
+            </p>
            
-            <h2>Part 2. Computing the "Mid-way Face"</h2>
-            <p>To compute the mid-way face of two different faces:</p>
-            <ol>
-                <li>Average Shape: Calculate the average positions of key points from both faces. </li>
-                <li>Warping: Use an affine transformation to morph each triangle from the original face into the shape of the corresponding triangle in the average shape. This can be done using skimage.draw.polygon to handle the triangles efficiently.</li>
-                <li>Cross-Dissolving: Blend the colors from both warped images with linear interpolation to get the final look.</li>
-            </ol>
+            <h2>Warp the Images</h2>
+            <p>
+                In this part, I implemented a process to warp an image using a given homography matrix \( H \). The key function takes an input image and the homography, applying inverse warping. The main steps include:
+            </p>
+            <ul>
+                <li><strong>Inverse Homography Calculation:</strong> Compute the inverse of the homography matrix \( H \) to map destination points back to the source image.</li>
+                <li><strong>Grid Generation:</strong> Create a grid of coordinates for the output image using <code>np.indices</code>, which defines the pixel locations to be mapped.</li>
+                <li><strong>Coordinate Transformation:</strong> Transform these output coordinates back to the source image space using the inverse homography.</li>
+                <li><strong>Interpolation:</strong> I used <code>map_coordinates</code> to interpolate pixel values at the transformed coordinates.</li>
+            </ul>
+            
+            <h2>Image Rectification</h2>
+            <p>
+                Image rectification involves transforming a photo containing known rectangular objects, 
+                such as paintings or posters, to make one of them perfectly rectangular using a homography. 
+                I prepared the destination points by defining a rectangle based on known correspondences in the image. 
+                For example, if the image contains tiles that are supposed to be square, I identify the corners of one tile and map them to a defined square. 
+                Then, I computed the homography and applied it, achieving the rectification.
+            </p>
+
             <div class="images-container">
                 <div class="img-container">
-                    <img src="./data/jasper.jpg" alt="Jasper">
-                    <p class="caption">Jasper</p>
+                    <img src="./img/ipad.jpg">
+                    <p class="caption">Ipad</p>
                 </div>
                 <div class="img-container">
-                    <img src="./output/warped_image.png" alt="Jasper-George Midway">
-                    <p class="caption">Jasper-George Midway</p>
-                </div>
-                <div class="img-container">
-                    <img src="./data/george.jpg" alt="George">
-                    <p class="caption">George</p>
+                    <img src="./output/warped_ipad.jpg">
+                    <p class="caption">Warped Ipad</p>
                 </div>
             </div>  
-            <p>
-                The outside hair is not merged very well in the mid-way face. Probably because the hairstyles are different, and I didn't choose too many keypoints on the hair.
-            </p>
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./img/eminem.jpg">
+                    <p class="caption">Eminem Poster</p>
+                </div>
+                <div class="img-container">
+                    <img src="./output/warped_eminem.jpg">
+                    <p class="caption">Warped Eminem Poster</p>
+                </div>
+            </div>  
 
-            <h2>Part 3. The Morph Sequence</h2>
-            <p>To create the morph sequence, I used the outputs from Part 2 with a range of weights in [0, 1]. 
-                I generated 45 frames for the morph sequence.</p>
-            <div class="gif-container">
-                <img src="./output/morph_sequence.gif" alt="Morphing GIF" width="500">
+
+            <h2>Blend the images into a mosaic</h2>
+            <p>
+                In this part, I worked on blending images into a mosaic by warping them to align properly. 
+                First, I calculated the homography to map points from one image to another. 
+                Using <code>scipy.ndimage</code>, I warp the images and create an alpha mask to ensure smooth blending by making the image edges fade out gently. 
+                Then, I determine the bounding box for the mosaic, shifting images as needed. 
+                For blending, I use weighted averaging, combining the images based on their alpha values to avoid harsh edges, which can create a seamless mosaic.
+            </p>
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./img/hallway1.jpg">
+                    <p class="caption">hallway_left</p>
+                </div>
+
+                <div class="img-container">
+                    <img src="./img/hallway2.jpg">
+                    <p class="caption">hallway_left</p>
+                </div>
+            </div>  
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./output/alpha_base_hallway.jpg">
+                    <p class="caption">alpha_hallway_left</p>
+                </div>
+    
+
+                <div class="img-container">
+                    <img src="./output/alpha_base_placed_hallway.jpg">
+                    <p class="caption">alpha_hallway_right</p>
+                </div>
+            </div> 
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./output/mosaic_hallway.jpg">
+                    <p class="caption">mosaic hallway</p>
+                </div>
+            </div>
+
+
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./img/mountain2.jpg">
+                    <p class="caption">Mountain left</p>
+                </div>
+                <div class="img-container">
+                    <img src="./img/mountain1.jpg">
+                    <p class="caption">Mountain right</p>
+                </div>
+            </div>
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./output/alpha_base_mountain.jpg">
+                    <p class="caption">alpha_mountain_left</p>
+                </div>
+                <div class="img-container">
+                    <img src="./output/alpha_base_placed_mountain.jpg">
+                    <p class="caption">alpha_mountain_right</p>
+                </div>
+            </div>
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./output/mosaic_mountain.jpg">
+                    <p class="caption">mosaic mountain</p>
+                </div>
             </div>
             
-            <h2>Part 4. The "Mean face" of a population</h2>
-            <p>
-                In this section, I analyzed a dataset of facial images to determine average face shapes. 
-                The dataset consists of 400 images: 100 male faces, 100 smiling male faces, 100 female faces, and 100 smiling female faces. I also transformed individual faces in the dataset to match this average shape and displayed these transformations. 
-                Additionally, I morphed my face and the average face into each other.
-            </p>
-            
-            <h3>Four examples of Mean Face</h3> 
             <div class="images-container">
                 <div class="img-container">
-                    <img src="./output/original_normal_male.png" alt="original normal male face">
-                    <p class="caption">Example 1</p>
+                    <img src="./img/observatory1.jpg">
+                    <p class="caption">observatory_left</p>
                 </div>
                 <div class="img-container">
-                    <img src="./output/warped_normal_male.png" alt="warped_normal_male">
-                    <p class="caption">warped</p>
-                </div>
-
-                <div class="img-container">
-                    <img src="./output/original_normal_female.png" alt="original normal female face">
-                    <p class="caption">Example 2</p>
-                </div>
-                <div class="img-container">
-                    <img src="./output/warped_normal_female.png" alt="warped_normal_male">
-                    <p class="caption">warped</p>
+                    <img src="./img/observatory2.jpg">
+                    <p class="caption">observatory_left</p>
                 </div>
             </div>
-
             <div class="images-container">
                 <div class="img-container">
-                    <img src="./output/original_smiling_male.png" alt="original smiling male face">
-                    <p class="caption">Example 3</p>
+                    <img src="./output/alpha_base_placed_observatory.jpg">
+                    <p class="caption">alpha_observatory_right</p>
                 </div>
                 <div class="img-container">
-                    <img src="./output/warped_smiling_male.png" alt="warped_smiling_male">
-                    <p class="caption">warped</p>
-                </div>
-
-                <div class="img-container">
-                    <img src="./output/original_smiling_female.png" alt="original smiling female face">
-                    <p class="caption">Example 4</p>
-                </div>
-                <div class="img-container">
-                    <img src="./output/warped_smiling_female.png" alt="warped_smiling_female">
-                    <p class="caption">warped</p>
+                    <img src="./output/alpha_base_observatory.jpg">
+                    <p class="caption">alpha_observatory_left</p>
                 </div>
             </div>
-
-            <h3>Average Faces of population</h3>
             <div class="images-container">
                 <div class="img-container">
-                    <img src="./output/average_normal_male.png" alt="average_male">
-                    <p class="caption">Average Male Face</p>
-                </div>
-                <div class="img-container">
-                    <img src="./output/average_normal_female.png" alt="average_female">
-                    <p class="caption">Average Female Face</p>
-                </div>
-
-                <div class="img-container">
-                    <img src="./output/average_smiling_male.png" alt="average smiling male">
-                    <p class="caption">Average smiling Male Face</p>
-                </div>
-                <div class="img-container">
-                    <img src="./output/average_smiling_female.png" alt="average smiling female">
-                    <p class="caption">Average smiling Female Face</p>
+                    <img src="./output/mosaic_observatory.jpg">
+                    <p class="caption">mosaic hallway</p>
                 </div>
             </div>
-
-            <h3>Morphing between my face and the average face</h3>
-            <div class="images-container">
-                <div class="img-container">
-                    <img src="./output/me_to_average.png" alt="me_to_average">
-                    <p class="caption">Jasper to Average Male</p>
-                </div>
-                <div class="img-container">
-                    <img src="./output/average_to_me.png" alt="average_to_me">
-                    <p class="caption">Average to Jasper</p>
-                </div>
-            </div>
-            <p>The image is a little weird, probably because I still kept some forehead, and my head is not in the same position as the average picture.</p>
-
-            <h2>Part 5. Caricatures: Extrapolating from the mean</h2>
-            <p>
-                In this part, I created caricatures by extrapolating from the average face. 
-                I created the image by choosing alphas outside the normal range [0, 1], specifically from -0.5 to 2.
-            </p>
-            <div class="images-container">
-                <div class="img-container">
-                    <img src="./output/caricature_a0.5.png" alt="a = 0.5">
-                    <p class="caption">Caricature with a = 0.5</p>
-                </div>
-                <div class="img-container">
-                    <img src="./output/caricature_a2.png" alt="a = 2">
-                    <p class="caption">Caricature with a = 2</p>
-                </div>
-            </div>
-        
-            <h2>Bells and Whistles</h2>
-            <p>I morphed my face to the average female and to the average smiling female.</p>
-            <div class="images-container">
-                <div class="img-container">
-                    <img src="./output/me_to_female.png" alt="me_to_female">
-                    <p class="caption">Jasper to Female</p>
-                </div>
-                <div class="img-container">
-                    <img src="./output/me_to_smiling_female.png" alt="me_to_smiling_female">
-                    <p class="caption">Jasper to Smiling Female</p>
-                </div>
-            </div>
-
-            <h3>Jasper and part of his friends</h3>
-            <p>I used the previous methods and added morphs among friends to create a face-morphing music video.</p>
-            <div class="video-container">
-                <iframe 
-                    src="https://www.youtube.com/embed/2VoGF7aiO3M" 
-                    frameborder="0" 
-                    allowfullscreen>
-                </iframe>
-            </div>
-            <h2>Reflection</h2>
-            <p>
-                The project is very interesting. I learned how to morph two faces together. 
-                After marking the keypoints, I could use these keypoints to create a mid-way image and generate a smooth morphing sequence.
-                What I can do better: I can choose more keypoints on the hair to make the morphing more smooth.
-            </p>
         </article>
     </div>
 </body>
