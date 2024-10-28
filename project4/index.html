@@ -67,6 +67,10 @@
             width: 30%;
             max-width: 300px;
         }
+        .larger-img img{
+            width: 100%;
+            max-width: 800px;
+        }
         .caption {
             font-size: 1.2em;
         }
@@ -238,7 +242,7 @@
             <p>
                 Image rectification involves transforming a photo containing known rectangular objects, 
                 such as paintings or posters, to make one of them perfectly rectangular using a homography. 
-                I prepared the destination points by defining a rectangle based on known correspondences in the image. 
+                I defined the destination points by mapping the corners of a known shape, such as a square tile, to a perfect square.
                 For example, if the image contains tiles that are supposed to be square, I identify the corners of one tile and map them to a defined square. 
                 Then, I computed the homography and applied it, achieving the rectification.
             </p>
@@ -273,90 +277,235 @@
                 Then, I determine the bounding box for the mosaic, shifting images as needed. 
                 For blending, I use weighted averaging, combining the images based on their alpha values to avoid harsh edges, which can create a seamless mosaic.
             </p>
+            <h3>Hallway Results</h3>
+            <!-- Left -->
             <div class="images-container">
                 <div class="img-container">
                     <img src="./img/hallway1.jpg">
                     <p class="caption">hallway_left</p>
                 </div>
-
                 <div class="img-container">
-                    <img src="./img/hallway2.jpg">
-                    <p class="caption">hallway_left</p>
-                </div>
-            </div>  
-            <div class="images-container">
-                <div class="img-container">
-                    <img src="./output/alpha_base_hallway.jpg">
+                    <img src="./output/mask_im1_hallway.jpg">
                     <p class="caption">alpha_hallway_left</p>
                 </div>
-    
-
                 <div class="img-container">
-                    <img src="./output/alpha_base_placed_hallway.jpg">
+                    <img src="./output/warped_im1_hallway.jpg">
+                    <p class="caption">Warped_hallway_left</p>
+                </div>
+            </div>  
+            <!-- Right -->
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./img/hallway2.jpg">
+                    <p class="caption">hallway_right</p>
+                </div>
+                <div class="img-container">
+                    <img src="./output/alpha_im2_hallway.jpg">
                     <p class="caption">alpha_hallway_right</p>
                 </div>
+                <div class="img-container">
+                    <img src="./output/warped_im2_hallway.jpg">
+                    <p class="caption">Warped_hallway_right</p>
+                </div>
             </div> 
+            <!-- Mosaic -->
             <div class="images-container">
+                <div class="img-container">
+                    <img src="./output/warped_im1_hallway.jpg">
+                    <p class="caption">Warped_hallway_left</p>
+                </div>
                 <div class="img-container">
                     <img src="./output/mosaic_hallway.jpg">
                     <p class="caption">mosaic hallway</p>
                 </div>
+                <div class="img-container">
+                    <img src="./output/warped_im2_hallway.jpg">
+                    <p class="caption">Warped_hallway_right</p>
+                </div>
             </div>
 
-
+            <h3>Observatory Results</h3>
+            <!-- Left -->
             <div class="images-container">
-                <div class="img-container">
-                    <img src="./img/mountain2.jpg">
-                    <p class="caption">Mountain left</p>
-                </div>
-                <div class="img-container">
-                    <img src="./img/mountain1.jpg">
-                    <p class="caption">Mountain right</p>
-                </div>
-            </div>
-            <div class="images-container">
-                <div class="img-container">
-                    <img src="./output/alpha_base_mountain.jpg">
-                    <p class="caption">alpha_mountain_left</p>
-                </div>
-                <div class="img-container">
-                    <img src="./output/alpha_base_placed_mountain.jpg">
-                    <p class="caption">alpha_mountain_right</p>
-                </div>
-            </div>
-            <div class="images-container">
-                <div class="img-container">
-                    <img src="./output/mosaic_mountain.jpg">
-                    <p class="caption">mosaic mountain</p>
-                </div>
-            </div>
-            
-            <div class="images-container">
-                <div class="img-container">
-                    <img src="./img/observatory1.jpg">
-                    <p class="caption">observatory_left</p>
-                </div>
                 <div class="img-container">
                     <img src="./img/observatory2.jpg">
                     <p class="caption">observatory_left</p>
                 </div>
-            </div>
+                <div class="img-container">
+                    <img src="./output/alpha_im2_observatory.jpg">
+                    <p class="caption">alpha_observatory_left</p>
+                </div>
+                <div class="img-container">
+                    <img src="./output/warped_im2_observatory.jpg">
+                    <p class="caption">Warped_observatory_left</p>
+                </div>
+            </div> 
+
+            <!-- Right -->
             <div class="images-container">
                 <div class="img-container">
-                    <img src="./output/alpha_base_placed_observatory.jpg">
+                    <img src="./img/observatory1.jpg">
+                    <p class="caption">observatory_right</p>
+                </div>
+                <div class="img-container">
+                    <img src="./output/mask_im1_observatory.jpg">
                     <p class="caption">alpha_observatory_right</p>
                 </div>
                 <div class="img-container">
-                    <img src="./output/alpha_base_observatory.jpg">
-                    <p class="caption">alpha_observatory_left</p>
+                    <img src="./output/warped_im1_observatory.jpg">
+                    <p class="caption">Warped_observatory_right</p>
                 </div>
-            </div>
+            </div>  
+            <!-- Mosaic -->
             <div class="images-container">
+
+                <div class="img-container">
+                    <img src="./output/warped_im2_observatory.jpg">
+                    <p class="caption">Warped_observatory_left</p>
+                </div>
                 <div class="img-container">
                     <img src="./output/mosaic_observatory.jpg">
-                    <p class="caption">mosaic hallway</p>
+                    <p class="caption">mosaic observatory</p>
+                </div>
+                <div class="img-container">
+                    <img src="./output/warped_im1_observatory.jpg">
+                    <p class="caption">Warped_observatory_right</p>
                 </div>
             </div>
+
+            <h3>Mountain Results</h3>
+            <!-- Left -->
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./img/mountain1.jpg">
+                    <p class="caption">mountain_left</p>
+                </div>
+                <div class="img-container">
+                    <img src="./output/mask_im1_mountain.jpg">
+                    <p class="caption">alpha_mountain_left</p>
+                </div>
+                <div class="img-container">
+                    <img src="./output/warped_im1_mountain.jpg">
+                    <p class="caption">Warped_mountain_left</p>
+                </div>
+            </div>  
+            <!-- Right -->
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./img/mountain2.jpg">
+                    <p class="caption">mountain_right</p>
+                </div>
+                <div class="img-container">
+                    <img src="./output/alpha_im2_mountain.jpg">
+                    <p class="caption">alpha_mountain_right</p>
+                </div>
+                <div class="img-container">
+                    <img src="./output/warped_im2_mountain.jpg">
+                    <p class="caption">Warped_mountain_right</p>
+                </div>
+            </div> 
+            <!-- Mosaic -->
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./output/warped_im1_mountain.jpg">
+                    <p class="caption">Warped_mountain_left</p>
+                </div>
+                <div class="img-container">
+                    <img src="./output/mosaic_mountain.jpg">
+                    <p class="caption">mosaic mountain</p>
+                </div>
+                <div class="img-container">
+                    <img src="./output/warped_im2_mountain.jpg">
+                    <p class="caption">Warped_mountain_right</p>
+                </div>
+            </div>
+
+            
+            <h1>Project 4 Part B: FEATURE MATCHING for AUTOSTITCHING</h1>
+            <h2>Corner Detection</h2>
+            <p>In this step, I used the Harris Interest Point Detector to find keypoints in my images. 
+                These keypoints are areas in the image with strong corners, which will be useful later for aligning the images. 
+                I used provided sample code to implement the Harris detector. 
+            </p>
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./output/hallway1_corners.jpg">
+                    <p class="caption">Corners in the hallway</p>
+                </div>
+            </div> 
+            <h2>Adaptive Non-Maximal Suppression (ANMS)</h2>
+            <p>After detecting the initial Harris corners, I applied Adaptive Non-Maximal Suppression (ANMS) to choose the most relevant keypoints. 
+                The Harris detector can often find too many corners, many of which are too close to each other. 
+                ANMS helps by selecting keypoints that are well-distributed across the image, ensuring that we don't have too many corners clustered in one area. 
+            </p>
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./output/hallway1_anms.jpg">
+                    <p class="caption">ANMS keypoints in the hallway</p>
+                </div>
+            </div>
+            <h2>Feature Descriptors</h2>
+            <p>In this step, I implemented feature descriptor extraction to generate a numerical representation of the areas around the keypoints selected by ANMS. 
+                For each keypoint, I extracted an 8x8 patch of pixel values from a larger 40x40 window. 
+                Sampling from this larger window and blurring it helps create more stable descriptors. 
+                These descriptors capture the local appearance around each keypoint and are then normalized to ensure they are comparable between different images. 
+            </p>
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./output/hallway1_features.jpg">
+                    <p class="caption">Features of hallway after normalization</p>
+                </div>
+            </div>
+
+            <h2>Feature Matching</h2>
+            <p>In this step, I implemented feature matching to find pairs of keypoints between two images that look similar. 
+                To do this, I compared the descriptors extracted from each image and found the closest matches. 
+                I used the approach suggested by Lowe, where I compared the distance between the first and second nearest neighbors of each feature. 
+                If the ratio between these two distances was below a certain threshold, I considered it a good match. 
+            </p>
+            <div class="images-container">
+                <div class="larger-img-container  larger-img">
+                    <img src="./output/hallway_matches.jpg">
+                    <p class="caption">Feature matches between hallway images</p>
+                </div>
+            </div>
+
+            <h2>RANSAC (Random Sample Consensus)</h2>
+            <p>In this step, I implemented the RANSAC (Random Sample Consensus) algorithm to compute a homography estimate between two sets of matched keypoints. 
+                The homography is a transformation that maps the points from one image to the corresponding points in another image. 
+                Since some matches might be incorrect or noisy, RANSAC helps by repeatedly selecting random subsets of four point pairs and computing a homography from them. 
+                For each homography, I checked how many points fit the transformation well (inliers). 
+                After 1000 iterations, I selected the homography with the largest set of inliers, which gave me a robust estimate of the correct transformation. 
+            </p>
+            <p>Below, you can see the final matching along with the inliers. Green lines represent correct matching, red lines represent incorrect or noisy matchings.</p>
+            <div class="images-container">
+                <div class="larger-img-container  larger-img">
+                    <img src="./output/hallway_ransac_matches.jpg">
+                    <p class="caption">RANSAC homography between hallway images</p>
+                </div>
+            </div>
+
+            <h2>Results</h2>
+            <div class="images-container">
+                <div class="img-container">
+                    <img src="./output/mosaic_hallway_ransac.jpg">
+                    <p class="caption">Ransac auto stitching hallway</p>
+                </div>
+                <div class="img-container ">
+                    <img src="./output/mosaic_hallway.jpg">
+                    <p class="caption">manual stitching hallway</p>
+                </div>
+            </div>
+            <h3>Failure Reuslt</h3>
+            <div class="images-container">
+                <div class="larger-img-container larger-img">
+                    <img src="./output/mountain_ransac_matches.jpg">
+                    <p class="caption">Feature matches between mountain images</p>
+                </div>
+            </div>
+            <p> For the mountain images, the feature matching and RANSAC failed to produce a good result. 
+                I think it is probably because the clouds of two images are too different, and the feature matching algorithm cannot find enough good matches.
+            </p>
         </article>
     </div>
 </body>
