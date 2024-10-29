@@ -486,6 +486,7 @@
             </div>
 
             <h2>Results</h2>
+            <h3>Reuslts from Part A</h3>
             <div class="images-container">
                 <div class="img-container">
                     <img src="./output/mosaic_hallway_ransac.jpg">
@@ -499,13 +500,45 @@
             <h3>Failure Reuslt</h3>
             <div class="images-container">
                 <div class="larger-img-container larger-img">
-                    <img src="./output/mountain_ransac_matches.jpg">
+                    <img src="./output/observatory_ransac_matches.jpg">
                     <p class="caption">Feature matches between mountain images</p>
                 </div>
             </div>
-            <p> For the mountain images, the feature matching and RANSAC failed to produce a good result. 
-                I think it is probably because the clouds of two images are too different, and the feature matching algorithm cannot find enough good matches.
+            <p> For other images from part A, the feature matching and RANSAC failed to produce a good result. 
+                I think it is probably because the sky of these images are too uniform , which makes it hard to find good matches.
             </p>
+            <p>
+                So I find other two sets of images to do the feature matching and RANSAC.
+            </p>
+            <div class="images-container">
+                <div class="larger-img-container">
+                    <img src="./output/building_ransac_matches.jpg">
+                    <p class="caption">Feature matching in ransac</p>
+                </div>
+                <div class="img-container">
+                    <img src="./output/mosaic_building_ransac.jpg">
+                    <p class="caption">Ransac auto stitching buildings</p>
+                </div>
+                <div class="img-container ">
+                    <img src="./output/mosaic_building.jpg">
+                    <p class="caption">manual stitching buildings</p>
+                </div>
+            </div>
+            <div class="images-container">
+                <div class="larger-img-container">
+                    <img src="./output/jurassic_ransac_matches.jpg">
+                    <p class="caption">Feature matching in jurassic</p>
+                </div>
+                <div class="img-container">
+                    <img src="./output/mosaic_jurassic_ransac.jpg">
+                    <p class="caption">Ransac auto stitching jurassic</p>
+                </div>
+                <div class="img-container ">
+                    <img src="./output/mosaic_jurassic.jpg">
+                    <p class="caption">manual stitching jurassic</p>
+                </div>
+            </div>
+
         </article>
     </div>
 </body>
